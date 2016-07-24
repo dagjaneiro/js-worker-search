@@ -33,6 +33,12 @@ export default class SearchApi {
     return this
   }
 
+  removeDocument (uid: any): SearchApi {
+    this._search.removeDocument(uid)
+
+    return this
+  }
+
   /**
    * Searches the current index for the specified query text.
    * Only uids matching all of the words within the text will be accepted.

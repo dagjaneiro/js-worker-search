@@ -8,6 +8,7 @@ export default class SearchIndex {
 
   constructor () {
     this.tokenToUidMap = {}
+    this.UiToTokenMap = {}
   }
 
   /**
@@ -21,7 +22,23 @@ export default class SearchIndex {
       this.tokenToUidMap[token] = {}
     }
 
+    if (!this.UiToTokenMap[uid]) {
+      this.UiToTokenMap[uid] = {}
+    }
+
     this.tokenToUidMap[token][uid] = uid
+    this.UiToTokenMap[uid][token] = uid
+  }
+
+  removeDocument (uid: any): void {
+    let currentUidTokens = this.UiToTokenMap[uid]
+
+    if (currentUidTokens) {
+      for (let token in currentUidTokens) {
+        delete this.tokenToUidMap[token][uid]
+      }
+      delete this.UiToTokenMap[uid]
+    }
   }
 
   /**

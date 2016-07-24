@@ -37,6 +37,17 @@ export default class SearchUtility {
     return this
   }
 
+  removeDocument (uid: any): SearchUtility {
+    this.uids[uid] = true
+
+    if (this.uids[uid]) {
+      this.searchIndex.removeDocument(uid)
+      this.uids[uid] = null
+    }
+
+    return this
+  }
+
   /**
    * Searches the current index for the specified query text.
    * Only uids matching all of the words within the text will be accepted.
