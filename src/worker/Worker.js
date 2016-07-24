@@ -17,6 +17,11 @@ self.addEventListener('message', event => {
 
       searchUtility.indexDocument(uid, text)
       break
+    case 'removeDocument':
+      const { rUid } = data
+
+      searchUtility.removeDocument(rUid)
+      break
     case 'search':
       const { callbackId, query } = data
 

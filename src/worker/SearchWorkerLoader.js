@@ -51,6 +51,15 @@ export default class SearchWorkerLoader {
     return this
   }
 
+  removeDocument (uid: any): SearchWorkerLoader {
+    this.worker.postMessage({
+      method: 'removeDocument',
+      uid
+    })
+
+    return this
+  }
+
   /**
    * Searches the current index for the specified query text.
    * Only uids matching all of the words within the text will be accepted.

@@ -63,16 +63,25 @@
 	  var data = event.data;
 	  var method = data.method;
 	
+	
 	  switch (method) {
 	    case 'indexDocument':
 	      var uid = data.uid;
 	      var text = data.text;
 	
+	
 	      searchUtility.indexDocument(uid, text);
+	      break;
+	    case 'removeDocument':
+	      var rUid = data.rUid;
+	
+	
+	      searchUtility.removeDocument(rUid);
 	      break;
 	    case 'search':
 	      var callbackId = data.callbackId;
 	      var query = data.query;
+	
 	
 	      var results = searchUtility.search(query);
 	
@@ -106,13 +115,13 @@
 
 	'use strict';
 	
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
-	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
 	var _SearchIndex = __webpack_require__(3);
 	
@@ -126,13 +135,11 @@
 	 * Synchronous client-side full-text search utility.
 	 * Forked from JS search (github.com/bvaughn/js-search).
 	 */
-	
 	var SearchUtility = function () {
 	
 	  /**
 	   * Constructor.
 	   */
-	
 	  function SearchUtility() {
 	    _classCallCheck(this, SearchUtility);
 	
@@ -147,6 +154,7 @@
 	   * @param uid Uniquely identifies a searchable object
 	   * @param text Text to associate with uid
 	   */
+	
 	
 	  _createClass(SearchUtility, [{
 	    key: 'indexDocument',
@@ -191,6 +199,26 @@
 	
 	      return _ref(this);
 	    }
+	  }, {
+	    key: 'removeDocument',
+	    value: function removeDocument(uid) {
+	      function _ref2(_id2) {
+	        if (!(_id2 instanceof SearchUtility)) {
+	          throw new TypeError('Function return value violates contract.\n\nExpected:\nSearchUtility\n\nGot:\n' + _inspect(_id2));
+	        }
+	
+	        return _id2;
+	      }
+	
+	      this.uids[uid] = true;
+	
+	      if (this.uids[uid]) {
+	        this.searchIndex.removeDocument(uid);
+	        this.uids[uid] = null;
+	      }
+	
+	      return _ref2(this);
+	    }
 	
 	    /**
 	     * Searches the current index for the specified query text.
@@ -207,12 +235,12 @@
 	  }, {
 	    key: 'search',
 	    value: function search(query) {
-	      function _ref2(_id2) {
-	        if (!Array.isArray(_id2)) {
-	          throw new TypeError('Function return value violates contract.\n\nExpected:\nArray<any>\n\nGot:\n' + _inspect(_id2));
+	      function _ref3(_id3) {
+	        if (!Array.isArray(_id3)) {
+	          throw new TypeError('Function return value violates contract.\n\nExpected:\nArray<any>\n\nGot:\n' + _inspect(_id3));
 	        }
 	
-	        return _id2;
+	        return _id3;
 	      }
 	
 	      if (!(typeof query === 'string')) {
@@ -220,7 +248,7 @@
 	      }
 	
 	      if (!query) {
-	        return _ref2(Object.keys(this.uids));
+	        return _ref3(Object.keys(this.uids));
 	      } else {
 	        var tokens = this._tokenize(this._sanitize(query));
 	
@@ -230,7 +258,7 @@
 	          throw new TypeError('Value of variable "tokens" violates contract.\n\nExpected:\nArray<string>\n\nGot:\n' + _inspect(tokens));
 	        }
 	
-	        return _ref2(this.searchIndex.search(tokens));
+	        return _ref3(this.searchIndex.search(tokens));
 	      }
 	    }
 	
@@ -243,14 +271,14 @@
 	  }, {
 	    key: '_expandToken',
 	    value: function _expandToken(token) {
-	      function _ref3(_id3) {
-	        if (!(Array.isArray(_id3) && _id3.every(function (item) {
+	      function _ref4(_id4) {
+	        if (!(Array.isArray(_id4) && _id4.every(function (item) {
 	          return typeof item === 'string';
 	        }))) {
-	          throw new TypeError('Function return value violates contract.\n\nExpected:\nArray<string>\n\nGot:\n' + _inspect(_id3));
+	          throw new TypeError('Function return value violates contract.\n\nExpected:\nArray<string>\n\nGot:\n' + _inspect(_id4));
 	        }
 	
-	        return _id3;
+	        return _id4;
 	      }
 	
 	      if (!(typeof token === 'string')) {
@@ -283,7 +311,7 @@
 	        console.error('Unable to parse token "' + token + '" ' + error);
 	      }
 	
-	      return _ref3(expandedTokens);
+	      return _ref4(expandedTokens);
 	    }
 	
 	    /**
@@ -293,19 +321,19 @@
 	  }, {
 	    key: '_sanitize',
 	    value: function _sanitize(string) {
-	      function _ref4(_id4) {
-	        if (!(typeof _id4 === 'string')) {
-	          throw new TypeError('Function return value violates contract.\n\nExpected:\nstring\n\nGot:\n' + _inspect(_id4));
+	      function _ref5(_id5) {
+	        if (!(typeof _id5 === 'string')) {
+	          throw new TypeError('Function return value violates contract.\n\nExpected:\nstring\n\nGot:\n' + _inspect(_id5));
 	        }
 	
-	        return _id4;
+	        return _id5;
 	      }
 	
 	      if (!(typeof string === 'string')) {
 	        throw new TypeError('Value of argument "string" violates contract.\n\nExpected:\nstring\n\nGot:\n' + _inspect(string));
 	      }
 	
-	      return _ref4(string.trim().toLocaleLowerCase());
+	      return _ref5(string.trim().toLocaleLowerCase());
 	    }
 	
 	    /**
@@ -315,21 +343,21 @@
 	  }, {
 	    key: '_tokenize',
 	    value: function _tokenize(text) {
-	      function _ref5(_id5) {
-	        if (!(Array.isArray(_id5) && _id5.every(function (item) {
+	      function _ref6(_id6) {
+	        if (!(Array.isArray(_id6) && _id6.every(function (item) {
 	          return typeof item === 'string';
 	        }))) {
-	          throw new TypeError('Function return value violates contract.\n\nExpected:\nArray<string>\n\nGot:\n' + _inspect(_id5));
+	          throw new TypeError('Function return value violates contract.\n\nExpected:\nArray<string>\n\nGot:\n' + _inspect(_id6));
 	        }
 	
-	        return _id5;
+	        return _id6;
 	      }
 	
 	      if (!(typeof text === 'string')) {
 	        throw new TypeError('Value of argument "text" violates contract.\n\nExpected:\nstring\n\nGot:\n' + _inspect(text));
 	      }
 	
-	      return _ref5(text.split(/\s+/).filter(function (text) {
+	      return _ref6(text.split(/\s+/).filter(function (text) {
 	        return text;
 	      })); // Remove empty tokens
 	    }
@@ -340,7 +368,16 @@
 	
 	exports.default = SearchUtility;
 	
-	function _inspect(input) {
+	function _inspect(input, depth) {
+	  var maxDepth = 4;
+	  var maxKeys = 15;
+
+	  if (depth === undefined) {
+	    depth = 0;
+	  }
+
+	  depth += 1;
+
 	  if (input === null) {
 	    return 'null';
 	  } else if (input === undefined) {
@@ -349,15 +386,29 @@
 	    return typeof input === 'undefined' ? 'undefined' : _typeof(input);
 	  } else if (Array.isArray(input)) {
 	    if (input.length > 0) {
-	      var first = _inspect(input[0]);
+	      var _ret = function () {
+	        if (depth > maxDepth) return {
+	            v: '[...]'
+	          };
 
-	      if (input.every(function (item) {
-	        return _inspect(item) === first;
-	      })) {
-	        return first.trim() + '[]';
-	      } else {
-	        return '[' + input.map(_inspect).join(', ') + ']';
-	      }
+	        var first = _inspect(input[0], depth);
+
+	        if (input.every(function (item) {
+	          return _inspect(item, depth) === first;
+	        })) {
+	          return {
+	            v: first.trim() + '[]'
+	          };
+	        } else {
+	          return {
+	            v: '[' + input.slice(0, maxKeys).map(function (item) {
+	              return _inspect(item, depth);
+	            }).join(', ') + (input.length >= maxKeys ? ', ...' : '') + ']'
+	          };
+	        }
+	      }();
+
+	      if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
 	    } else {
 	      return 'Array';
 	    }
@@ -372,14 +423,20 @@
 	      }
 	    }
 
-	    var entries = keys.map(function (key) {
-	      return (/^([A-Z_$][A-Z0-9_$]*)$/i.test(key) ? key : JSON.stringify(key)) + ': ' + _inspect(input[key]) + ';';
-	    }).join('\n  ');
+	    if (depth > maxDepth) return '{...}';
+	    var indent = '  '.repeat(depth - 1);
+	    var entries = keys.slice(0, maxKeys).map(function (key) {
+	      return (/^([A-Z_$][A-Z0-9_$]*)$/i.test(key) ? key : JSON.stringify(key)) + ': ' + _inspect(input[key], depth) + ';';
+	    }).join('\n  ' + indent);
+
+	    if (keys.length >= maxKeys) {
+	      entries += '\n  ' + indent + '...';
+	    }
 
 	    if (input.constructor && input.constructor.name && input.constructor.name !== 'Object') {
-	      return input.constructor.name + ' {\n  ' + entries + '\n}';
+	      return input.constructor.name + ' {\n  ' + indent + entries + '\n' + indent + '}';
 	    } else {
-	      return '{ ' + entries + '\n}';
+	      return '{\n  ' + indent + entries + '\n' + indent + '}';
 	    }
 	  }
 	}
@@ -390,13 +447,13 @@
 
 	"use strict";
 	
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
-	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
@@ -405,12 +462,12 @@
 	 * This structure is used by the Search class to optimize search operations.
 	 * Forked from JS search (github.com/bvaughn/js-search).
 	 */
-	
 	var SearchIndex = function () {
 	  function SearchIndex() {
 	    _classCallCheck(this, SearchIndex);
 	
 	    this.tokenToUidMap = {};
+	    this.UiToTokenMap = {};
 	  }
 	
 	  /**
@@ -419,6 +476,7 @@
 	   * @param token Searchable token (e.g. "road")
 	   * @param uid Identifies a document within the searchable corpus
 	   */
+	
 	
 	  _createClass(SearchIndex, [{
 	    key: "indexDocument",
@@ -429,9 +487,29 @@
 	
 	      if (!this.tokenToUidMap[token]) {
 	        this.tokenToUidMap[token] = {};
+	        this.tokenToUidMap[token][uid] = uid;
 	      }
 	
-	      this.tokenToUidMap[token][uid] = uid;
+	      if (!this.UiToTokenMap[uid]) {
+	        this.UiToTokenMap[uid] = {};
+	        this.UiToTokenMap[uid][token] = uid;
+	      }
+	    }
+	  }, {
+	    key: "removeDocument",
+	    value: function removeDocument(uid) {
+	      var currentUidTokens = this.UiToTokenMap[uid];
+	
+	      if (!(currentUidTokens != null && (typeof currentUidTokens === "undefined" ? "undefined" : _typeof(currentUidTokens)) === 'object')) {
+	        throw new TypeError("Value of variable \"currentUidTokens\" violates contract.\n\nExpected:\n{ [uid: any]: any\n}\n\nGot:\n" + _inspect(currentUidTokens));
+	      }
+	
+	      if (currentUidTokens) {
+	        for (var _token in currentUidTokens) {
+	          delete this.tokenToUidMap[_token][uid];
+	        }
+	        delete this.UiToTokenMap[uid];
+	      }
 	    }
 	
 	    /**
@@ -447,12 +525,12 @@
 	    value: function search(tokens) {
 	      var _this = this;
 	
-	      function _ref2(_id2) {
-	        if (!Array.isArray(_id2)) {
-	          throw new TypeError("Function return value violates contract.\n\nExpected:\nArray<any>\n\nGot:\n" + _inspect(_id2));
+	      function _ref3(_id3) {
+	        if (!Array.isArray(_id3)) {
+	          throw new TypeError("Function return value violates contract.\n\nExpected:\nArray<any>\n\nGot:\n" + _inspect(_id3));
 	        }
 	
-	        return _id2;
+	        return _id3;
 	      }
 	
 	      if (!(Array.isArray(tokens) && tokens.every(function (item) {
@@ -501,7 +579,7 @@
 	        uids.push(uidMap[_uid3]);
 	      }
 	
-	      return _ref2(uids);
+	      return _ref3(uids);
 	    }
 	  }]);
 	
@@ -510,7 +588,16 @@
 	
 	exports.default = SearchIndex;
 	
-	function _inspect(input) {
+	function _inspect(input, depth) {
+	  var maxDepth = 4;
+	  var maxKeys = 15;
+
+	  if (depth === undefined) {
+	    depth = 0;
+	  }
+
+	  depth += 1;
+
 	  if (input === null) {
 	    return 'null';
 	  } else if (input === undefined) {
@@ -519,15 +606,29 @@
 	    return typeof input === "undefined" ? "undefined" : _typeof(input);
 	  } else if (Array.isArray(input)) {
 	    if (input.length > 0) {
-	      var first = _inspect(input[0]);
+	      var _ret = function () {
+	        if (depth > maxDepth) return {
+	            v: '[...]'
+	          };
 
-	      if (input.every(function (item) {
-	        return _inspect(item) === first;
-	      })) {
-	        return first.trim() + '[]';
-	      } else {
-	        return '[' + input.map(_inspect).join(', ') + ']';
-	      }
+	        var first = _inspect(input[0], depth);
+
+	        if (input.every(function (item) {
+	          return _inspect(item, depth) === first;
+	        })) {
+	          return {
+	            v: first.trim() + '[]'
+	          };
+	        } else {
+	          return {
+	            v: '[' + input.slice(0, maxKeys).map(function (item) {
+	              return _inspect(item, depth);
+	            }).join(', ') + (input.length >= maxKeys ? ', ...' : '') + ']'
+	          };
+	        }
+	      }();
+
+	      if ((typeof _ret === "undefined" ? "undefined" : _typeof(_ret)) === "object") return _ret.v;
 	    } else {
 	      return 'Array';
 	    }
@@ -542,18 +643,24 @@
 	      }
 	    }
 
-	    var entries = keys.map(function (key) {
-	      return (/^([A-Z_$][A-Z0-9_$]*)$/i.test(key) ? key : JSON.stringify(key)) + ': ' + _inspect(input[key]) + ';';
-	    }).join('\n  ');
+	    if (depth > maxDepth) return '{...}';
+	    var indent = '  '.repeat(depth - 1);
+	    var entries = keys.slice(0, maxKeys).map(function (key) {
+	      return (/^([A-Z_$][A-Z0-9_$]*)$/i.test(key) ? key : JSON.stringify(key)) + ': ' + _inspect(input[key], depth) + ';';
+	    }).join('\n  ' + indent);
+
+	    if (keys.length >= maxKeys) {
+	      entries += '\n  ' + indent + '...';
+	    }
 
 	    if (input.constructor && input.constructor.name && input.constructor.name !== 'Object') {
-	      return input.constructor.name + ' {\n  ' + entries + '\n}';
+	      return input.constructor.name + ' {\n  ' + indent + entries + '\n' + indent + '}';
 	    } else {
-	      return '{ ' + entries + '\n}';
+	      return '{\n  ' + indent + entries + '\n' + indent + '}';
 	    }
 	  }
 	}
 
 /***/ }
 /******/ ]);
-//# sourceMappingURL=0c0d513cb6382ae030e3.worker.js.map
+//# sourceMappingURL=2e7b977391c4e0ae61b7.worker.js.map
